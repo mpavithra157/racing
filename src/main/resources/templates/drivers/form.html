@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create/Edit Driver</title>
+</head>
+<body>
+    <h1 th:text="${driver.id} != null ? 'Edit Driver' : 'Add New Driver'"></h1>
+ 
+    <form th:action="@{/drivers/save}" th:object="${driver}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" th:field="*{name}" required /><br/>
+ 
+        <label for="team">Team:</label>
+        <select th:field="*{team.id}">
+            <option th:each="team : ${teams}"
+                th:value="${team.id}"
+                th:text="${team.name}">Team</option>
+        </select><br/>
+ 
+        <button type="submit">Save</button>
+    </form>
+    <a th:href="@{/drivers}">Cancel</a>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Race Form</title>
+</head>
+<body>
+    <h1 th:text="${race.id} != null ? 'Edit Race' : 'Create New Race'">Race Form</h1>
+ 
+    <form th:action="@{/races/save}" th:object="${race}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <label>Race Track Name:</label><br/>
+        <input type="text" th:field="*{raceTrackName}" required maxlength="256"/><br/><br/>
+    
+        <label>Track Location (City, Country):</label><br/>
+        <input type="text" th:field="*{trackLocation}" required/><br/><br/>
+    
+        <label>Race Date:</label><br/>
+        <input type="date" th:field="*{raceDate}" required/><br/><br/>
+    
+        <label>Registration Closure Date:</label><br/>
+        <input type="date" th:field="*{registrationClosureDate}" /><br/><br/>
+ 
+        <button type="submit">Save</button>
+    </form>
+    <a th:href="@{/races}">Cancel</a>
+</body>
+</html>
