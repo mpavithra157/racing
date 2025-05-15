@@ -23,7 +23,6 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Race> races;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

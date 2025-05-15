@@ -17,7 +17,6 @@ public class Driver {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
