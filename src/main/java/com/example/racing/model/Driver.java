@@ -1,6 +1,10 @@
 package com.example.racing.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Driver {
@@ -9,40 +13,57 @@ public class Driver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private int age;
-    private String nationality;
+    @Column(length = 96, nullable = false)
+    @NotBlank
+    private String firstName;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
+    @Column(length = 96, nullable = false)
+    @NotBlank
+    private String lastName;
+
+    @Column(nullable = false)
+    @Past
+    @NotNull(message = "Date of Birth is required")
+    private LocalDate dob;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    @ManyToMany
+    @JoinTable(name = "driver_race", joinColumns = @JoinColumn(name = "driver_id"), inverseJoinColumns = @JoinColumn(name = "race_id"))
+    private Set<Race> registeredRaces = new HashSet<>();
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public int getAge() {
-        return age;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getNationality() {
-        return nationality;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
     public Team getTeam() {
@@ -51,5 +72,13 @@ public class Driver {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public Set<Race> getRegisteredRaces() {
+        return registeredRaces;
+    }
+
+    public void setRegisteredRaces(Set<Race> registeredRaces) {
+        this.registeredRaces = registeredRaces;
     }
 }

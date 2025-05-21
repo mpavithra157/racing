@@ -11,20 +11,22 @@
         <table border="1">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>ID</th>
+                    <th>Race Track</th>
                     <th>Location</th>
                     <th>Date</th>
+                    <th>Registration Closes</th>
+                    <th>Team</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="race : ${races}">
-                    <td th:text="${race.name}"></td>
-                    <td th:text="${race.id}"></td>
-                    <td th:text="${race.location}"></td>
-                    <td th:text="${#date.format(race.date,'yyyy-MM-dd')}"></td>
-                    
+                    <td th:text="${race.raceTrackName}">Track</td>
+                    <td th:text="${race.location}">Location</td>
+                    <td th:text="${#temporals.format(race.date,'yyyy-MM-dd')}">Date</td>
+                    <td th:text="${race.registrationClosureDate != null ?
+                    #temporals.format(race.registrationClosureDate, 'yyyy-MM-dd'): 'N/A'}">Reg Close</td>
+                    <td th:text="${race.team.name}">Team</td>
                     <td>
                         <a th:href="@{'/races/edit/' + ${race.id}}">Edit</a>
                         <a th:href="@{'/races/delete/' + ${race.id}}"

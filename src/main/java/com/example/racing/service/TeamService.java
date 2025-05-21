@@ -16,4 +16,6 @@ public interface TeamService {
     void updateTeam(Long id, Team updatedTeam, MultipartFile file) throws IOException;
 
     void deleteTeam(Long id);
+
+    byte[] getTeamLogoById(Long id);
 }

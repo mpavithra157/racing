@@ -6,21 +6,35 @@
 <body>
     <h1 th:text="${driver.id} != null ? 'Edit Driver' : 'Add New Driver'"></h1>
  
-    <form th:action="@{/drivers/save}" th:object="${driver}" method="post" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{${driver.id != null} ? '/drivers/update/' + ${driver.id} :'/drivers/save'}" 
+        th:object="${driver}" method="post">
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" required /><br/>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" required /><br/>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" required /><br/>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" th:field="*{dob}" required /><br/>
  
         <label for="team">Team:</label>
-        <select th:field="*{team.id}">
+        <select id="team" name="team.id" th:field="*{team}" class="form-control">
+            <option value="" disabled selected>Select a Team</option>
             <option th:each="team : ${teams}"
-                th:value="${team.id}"
-                th:text="${team.name}">Team</option>
+                th:value="${team.id}" th:text="${team.name}">
+            </option>
         </select><br/>
- 
-        <button type="submit">Save</button>
+
+        <label for="races">Registered Races:</label>
+        <select id="races" th:field="*{registeredRaces}" multiple size="3">
+            <option th:each="race : ${races}" th:value="${race.id}"
+            th:text="${race.raceTrackName}"></option>
+        </select><br/>
+
+    <button type="submit">Save</button>
     </form>
+    
     <a th:href="@{/drivers}">Cancel</a>
 </body>
 </html>

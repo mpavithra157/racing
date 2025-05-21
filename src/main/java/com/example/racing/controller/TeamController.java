@@ -3,6 +3,7 @@ package com.example.racing.controller;
 import com.example.racing.model.Team;
 import com.example.racing.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,13 +33,14 @@ public class TeamController {
     }
 
     @PostMapping("/save")
-    public String createTeam(@Valid @ModelAttribute("team") Team team,
-            @RequestParam("logoFile") MultipartFile file,
-            BindingResult result) throws IOException {
+    public String saveTeam(@Valid @ModelAttribute("team") Team team,
+            @RequestParam(value = "logoFile", required = false) MultipartFile logofile,
+            BindingResult result, Model model) throws IOException {
         if (result.hasErrors()) {
+            model.addAttribute("team", team);
             return "teams/form";
         }
-        teamService.saveTeamWithLogo(team, file);
+        teamService.saveTeamWithLogo(team, logofile);
         return "redirect:/teams";
     }
 
@@ -61,8 +63,22 @@ public class TeamController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
+    public String deleteTeam(@PathVariable Long id, Model model) {
+        try {
+            teamService.deleteTeam(id);
+        } catch (IllegalStateException e) {
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("error", e.getMessage());
+            return "teams/list";
+        }
         return "redirect:/teams";
+    }
+
+    @GetMapping("/logo/{id}")
+    public ResponseEntity<byte[]> getTeamLogo(@PathVariable Long id) {
+        byte[] logo = teamService.getTeamLogoById(id); // You must implement this in your service
+        return ResponseEntity.ok()
+                .header("Content-Type", "image/jpeg") // or determine type dynamically if needed
+                .body(logo);
     }
 }

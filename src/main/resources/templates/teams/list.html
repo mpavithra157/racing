@@ -20,13 +20,13 @@
             </thead>
             <tbody>
                 <tr th:each="team : ${teams}">
-                    <td th:text="${team.teamName}">Team Name</td>
-                    <td th:text="${team.teamCity + ',' + team.teamCountry}">Location</td>
+                    <td th:text="${team.name}">Team Name</td>
+                    <td th:text="${team.location}">Location</td>
                     <td>
                         <img th:src="@{'/teams/logo/' + ${team.id}}" width="50"/>
  
                     </td>
-                    <td th:text="${team.teamDescription}">Description</td>
+                    <td th:text="${team.description}">Description</td>
                     <td>
                         <a th:href="@{'/teams/edit/' + ${team.id}}">Edit</a>
                         <a th:href="@{'/teams/delete/' + ${team.id}}">Delete</a>

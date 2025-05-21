@@ -2,13 +2,13 @@ package com.example.racing.controller;
 
 import com.example.racing.model.Race;
 import com.example.racing.service.RaceService;
+import com.example.racing.service.TeamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/races")
@@ -17,6 +17,9 @@ public class RaceController {
     @Autowired
     private RaceService raceService;
 
+    @Autowired
+    private TeamService teamService;
+
     @GetMapping
     public String listRaces(Model model) {
         model.addAttribute("races", raceService.getAllRaces());
@@ -24,15 +27,16 @@ public class RaceController {
     }
 
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateRaceForm(Model model) {
         model.addAttribute("race", new Race());
+        model.addAttribute("teams", teamService.getAllTeams());
         return "races/form";
     }
 
     @PostMapping("/save")
-    public String createRace(@Valid @ModelAttribute("race") Race race,
-            BindingResult result) {
+    public String saveRace(@Valid @ModelAttribute Race race, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("teams", teamService.getAllTeams());
             return "races/form";
         }
         raceService.saveRace(race);
@@ -41,15 +45,17 @@ public class RaceController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("race", raceService.getRaceById(id));
+        Race race = raceService.getRaceById(id);
+        model.addAttribute("race", race);
+        model.addAttribute("teams", teamService.getAllTeams());
         return "races/form";
     }
 
     @PostMapping("/update/{id}")
-    public String updateRace(@PathVariable Long id,
-            @Valid @ModelAttribute("race") Race race,
-            BindingResult result) {
+    public String updateRace(@PathVariable Long id, @Valid @ModelAttribute Race race, BindingResult result,
+            Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("teams", teamService.getAllTeams());
             return "races/form";
         }
         raceService.updateRace(id, race);

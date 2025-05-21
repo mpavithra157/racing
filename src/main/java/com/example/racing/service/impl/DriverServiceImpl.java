@@ -35,16 +35,22 @@ public class DriverServiceImpl implements DriverService {
         Optional<Driver> existingOpt = driverRepository.findById(id);
         if (existingOpt.isPresent()) {
             Driver existing = existingOpt.get();
-            existing.setName(updatedDriver.getName());
-            existing.setAge(updatedDriver.getAge());
-            existing.setNationality(updatedDriver.getNationality());
+            existing.setFirstName(updatedDriver.getFirstName());
+            existing.setLastName(updatedDriver.getLastName());
+            existing.setDob(updatedDriver.getDob());
             existing.setTeam(updatedDriver.getTeam());
+            existing.setRegisteredRaces(updatedDriver.getRegisteredRaces());
             driverRepository.save(existing);
         }
     }
 
     @Override
     public void deleteDriver(Long id) {
-        driverRepository.deleteById(id);
+        Driver driver = getDriverById(id);
+        if (driver != null && (driver.getRegisteredRaces() == null || driver.getRegisteredRaces().isEmpty())) {
+            driverRepository.deleteById(id);
+        } else {
+            throw new IllegalStateException("Driver cannot be deleted. They have registered races.");
+        }
     }
 }

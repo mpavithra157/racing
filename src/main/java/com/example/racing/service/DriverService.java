@@ -10,7 +10,7 @@ public interface DriverService {
 
     void saveDriver(Driver driver);
 
-    void updateDriver(Long id, Driver updatedDriver);
+    void updateDriver(Long id, Driver driver);
 
     void deleteDriver(Long id);
 }

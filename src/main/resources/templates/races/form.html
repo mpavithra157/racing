@@ -4,22 +4,30 @@
     <title>Race Form</title>
 </head>
 <body>
-    <h1 th:text="${race.id} != null ? 'Edit Race' : 'Create New Race'">Race Form</h1>
- 
-    <form th:action="@{/races/save}" th:object="${race}" method="post">
-        <input type="hidden" th:field="*{id}"/>
+    <h1 th:text="${race.id} != null ? 'Edit Race' : 'Add New Race'"></h1>
+
+    <form th:action="@{${race.id != null} ? '/races/update/' + ${race.id} :'/races/save'}" 
+        th:object="${race}" method="post">
 
         <label>Race Track Name:</label><br/>
         <input type="text" th:field="*{raceTrackName}" required maxlength="256"/><br/><br/>
     
-        <label>Track Location (City, Country):</label><br/>
-        <input type="text" th:field="*{trackLocation}" required/><br/><br/>
+        <label>Location (City, Country):</label><br/>
+        <input type="text" th:field="*{location}" required/><br/><br/>
     
-        <label>Race Date:</label><br/>
-        <input type="date" th:field="*{raceDate}" required/><br/><br/>
+        <label>Date:</label><br/>
+        <input type="date" th:field="*{date}" required/><br/><br/>
     
-        <label>Registration Closure Date:</label><br/>
+        <label>Registration Closure Date(optional):</label><br/>
         <input type="date" th:field="*{registrationClosureDate}" /><br/><br/>
+
+        <label>Team:</label>
+        <select id="team" name="team.id" th:field="*{team}" class="form-control">
+            <option value="" disabled selected>Select a Team</option>
+            <option th:each="team : ${teams}"
+                th:value="${team.id}" th:text="${team.name}">
+            </option>
+        </select><br/>
  
         <button type="submit">Save</button>
     </form>

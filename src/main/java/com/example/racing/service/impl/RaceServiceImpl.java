@@ -5,15 +5,18 @@ import com.example.racing.repository.RaceRepository;
 import com.example.racing.service.RaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RaceServiceImpl implements RaceService {
 
+    private final RaceRepository raceRepository;
+
     @Autowired
-    private RaceRepository raceRepository;
+    public RaceServiceImpl(RaceRepository raceRepository) {
+        this.raceRepository = raceRepository;
+    }
 
     @Override
     public List<Race> getAllRaces() {
@@ -22,7 +25,8 @@ public class RaceServiceImpl implements RaceService {
 
     @Override
     public Race getRaceById(Long id) {
-        return raceRepository.findById(id).orElse(null);
+        Optional<Race> raceOptional = raceRepository.findById(id);
+        return raceOptional.orElseThrow(() -> new IllegalArgumentException("Race not found with id: " + id));
     }
 
     @Override
@@ -32,18 +36,18 @@ public class RaceServiceImpl implements RaceService {
 
     @Override
     public void updateRace(Long id, Race updatedRace) {
-        Optional<Race> existingRaceOpt = raceRepository.findById(id);
-        if (existingRaceOpt.isPresent()) {
-            Race existingRace = existingRaceOpt.get();
-            existingRace.setRaceName(updatedRace.getRaceName());
-            existingRace.setLocation(updatedRace.getLocation());
-            existingRace.setTeam(updatedRace.getTeam());
-            raceRepository.save(existingRace);
+        if (!raceRepository.existsById(id)) {
+            throw new IllegalArgumentException("Cannot update. Race not found with id: " + id);
         }
+        updatedRace.setId(id); // Ensure ID is preserved
+        raceRepository.save(updatedRace);
     }
 
     @Override
     public void deleteRace(Long id) {
+        if (!raceRepository.existsById(id)) {
+            throw new IllegalArgumentException("Cannot delete. Race not found with id: " + id);
+        }
         raceRepository.deleteById(id);
     }
 }

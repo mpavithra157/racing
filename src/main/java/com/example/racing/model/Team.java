@@ -10,8 +10,13 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 256, unique = true, nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String location;
+
+    @Column(length = 1024)
     private String description;
 
     @Lob
@@ -73,5 +78,10 @@ public class Team {
 
     public void setRaces(List<Race> races) {
         this.races = races;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.id);
     }
 }

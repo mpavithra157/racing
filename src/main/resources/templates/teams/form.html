@@ -6,29 +6,30 @@
 <body>
     <h1 th:text="${team.id} != null ? 'Edit Team' : 'Create New Team'">Team Form</h1>
  
-    <form th:action="@{/teams/save}" th:object="${team}" method="post" enctype="multipart/form-data">
+    <form th:action="${team.id} != null ? @{'/teams/update/' + ${team.id}} : @{/teams/save}" 
+    th:object="${team}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
  
         <label>Team Name:</label><br/>
-        <input type="text" th:field="*{teamName}" required maxlength="256"/><br/><br/>
+        <input type="text" th:field="*{name}" required maxlength="256"/><br/><br/>
  
         <label>Team Location (City, Country):</label><br/>
-        <input type="text" th:field="*{teamLocation}" required/><br/><br/>
+        <input type="text" th:field="*{location}" required/><br/><br/>
  
         <label>Team Description:</label><br/>
-        <textarea th:field="*{teamDescription}" maxlength="1024"></textarea><br/><br/>
+        <textarea th:field="*{description}" maxlength="1024"></textarea><br/><br/>
  
         <label>Team Logo (max 50KB):</label><br/>
-        <input type="file" name="logoFile" accept="image/*" /><br/><br/>
+        <input type="file" name="logoFile" accept="image/*" 
+        th:attr="required=${team.id !=null}"/><br/><br/>
  
-        <div th:if="${team.id !=null}">
+        <div th:if="${team.logo !=null}">
             <p><strong>Current Logo:</strong></p>
-            <img th:src="@{'/teams/logo/' + ${team.id}}" alt="Team Logo" width="150"/>
+            <img th:src="@{'/teams/logo/' + ${team.id}}" width="150"/>
         </div>
  
         <button type="submit">Save</button>
     </form>
- 
     <br/>
     <a th:href="@{/teams}">Cancel</a>
 </body>
