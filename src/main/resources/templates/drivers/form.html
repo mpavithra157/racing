@@ -16,7 +16,7 @@
         <input type="text" id="lastName" th:field="*{lastName}" required /><br/>
 
         <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" th:field="*{dob}" required /><br/>
+        <input type="date" th:field="*{dob}" max="2000-12-31" required/><br/>
  
         <label for="team">Team:</label>
         <select id="team" name="team.id" th:field="*{team}" class="form-control">

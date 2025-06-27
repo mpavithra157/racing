@@ -5,13 +5,19 @@
 </head>
 <body>
     <h1 th:text="${team.id} != null ? 'Edit Team' : 'Create New Team'">Team Form</h1>
+    <div th:if="${error}" style="color: red; font-weight: bold;">
+        <p th:text="${error}"></p>
+    </div>
  
     <form th:action="${team.id} != null ? @{'/teams/update/' + ${team.id}} : @{/teams/save}" 
     th:object="${team}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
  
         <label>Team Name:</label><br/>
-        <input type="text" th:field="*{name}" required maxlength="256"/><br/><br/>
+        <input type="text" th:field="*{name}" required ><br/><br/>
+        <div th:if="${#fields.hasErrors('name')}" style="color: red;">
+            <p th:errors="*{name}"></p>
+        </div>
  
         <label>Team Location (City, Country):</label><br/>
         <input type="text" th:field="*{location}" required/><br/><br/>

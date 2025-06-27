@@ -1,7 +1,14 @@
 package com.example.racing.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.util.ArrayList;
 
 @Entity
 public class Team {
@@ -11,6 +18,8 @@ public class Team {
     private Long id;
 
     @Column(length = 256, unique = true, nullable = false)
+    @NotBlank(message = "Team name is required")
+    @Size(max = 256, message = "Team name must not exceed 256 characters")
     private String name;
 
     @Column(nullable = false)
@@ -20,10 +29,12 @@ public class Team {
     private String description;
 
     @Lob
+    @JsonIgnore
     private byte[] logo;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Driver> drivers;
+    @JsonManagedReference
+    private List<Driver> drivers = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Race> races;

@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Race {
@@ -14,8 +17,9 @@ public class Race {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 96, nullable = false)
-    @NotBlank
+    @Column(length = 256, nullable = false, unique = true)
+    @NotBlank(message = "RaceTrack name is required")
+    @Size(max = 256, message = "RaceTrack name must not exceed 256 characters")
     private String raceTrackName;
 
     @Column(nullable = false)
@@ -32,9 +36,11 @@ public class Race {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "team_id", nullable = false)
+    @JsonIgnore
     private Team team;
 
     @ManyToMany(mappedBy = "registeredRaces")
+    @JsonIgnore
     private Set<Driver> drivers = new HashSet<>();
 
     // Getters and setters
@@ -93,5 +99,10 @@ public class Race {
 
     public void setDrivers(Set<Driver> drivers) {
         this.drivers = drivers;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.id);
     }
 }

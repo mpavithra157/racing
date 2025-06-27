@@ -6,6 +6,11 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Driver {
 
@@ -28,6 +33,8 @@ public class Driver {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "team_id", nullable = false)
+    @JsonIgnoreProperties({ "drivers", "hibernateLazyInitializer", "handler" })
+
     private Team team;
 
     @ManyToMany
@@ -80,5 +87,10 @@ public class Driver {
 
     public void setRegisteredRaces(Set<Race> registeredRaces) {
         this.registeredRaces = registeredRaces;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.id);
     }
 }

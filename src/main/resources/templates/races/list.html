@@ -16,6 +16,7 @@
                     <th>Date</th>
                     <th>Registration Closes</th>
                     <th>Team</th>
+                    <th>Registered Drivers</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,14 +29,20 @@
                     #temporals.format(race.registrationClosureDate, 'yyyy-MM-dd'): 'N/A'}">Reg Close</td>
                     <td th:text="${race.team.name}">Team</td>
                     <td>
+                        <ul>
+                            <li th:each="driver : ${race.drivers}" 
+                            th:text="${driver.firstName + '' + driver.lastName}">Driver</li>
+                        </ul>
+                    </td>
+                    <td>
                         <a th:href="@{'/races/edit/' + ${race.id}}">Edit</a>
-                        <a th:href="@{'/races/delete/' + ${race.id}}"
-                          onclick="return confirm('Are you sure?')">Delete</a>
+                        <a th:href="@{'/races/delete/' + ${race.id}}">Delete</a>
                     </td>
                 </tr>
             </tbody>
             </table>
             <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+            <button><a href="/">Home</a></button>
  
     </body>
 </html>

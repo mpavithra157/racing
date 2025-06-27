@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -76,7 +77,14 @@ public class DriverController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteDriver(@PathVariable Long id) {
+    public String deleteDriver(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Driver driver = driverService.getDriverById(id);
+
+        if (driver.getRegisteredRaces() != null && !driver.getRegisteredRaces().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Cannot delete driver registered in at least one race.");
+            return "redirect:/drivers";
+        }
+
         driverService.deleteDriver(id);
         return "redirect:/drivers";
     }

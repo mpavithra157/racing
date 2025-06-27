@@ -10,8 +10,11 @@
         th:object="${race}" method="post">
 
         <label>Race Track Name:</label><br/>
-        <input type="text" th:field="*{raceTrackName}" required maxlength="256"/><br/><br/>
-    
+        <input type="text" th:field="*{raceTrackName}" required /><br/>
+        <div th:if="${#fields.hasErrors('raceTrackName')}" style="color: red;">
+        <p th:errors="*{raceTrackName}"></p>
+        </div><br/>
+
         <label>Location (City, Country):</label><br/>
         <input type="text" th:field="*{location}" required/><br/><br/>
     
@@ -28,6 +31,12 @@
                 th:value="${team.id}" th:text="${team.name}">
             </option>
         </select><br/>
+
+        <label>Register Drivers:</label><br/>
+        <select multiple th:field="*{drivers}" name="drivers" class="form-control">
+            <option th:each="driver : ${drivers}" th:value="${driver.id}"
+            th:text="${driver.firstName + '' + driver.lastName}"></option>
+        </select><br/><br/>
  
         <button type="submit">Save</button>
     </form>

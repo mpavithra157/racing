@@ -4,4 +4,5 @@ import com.example.racing.model.Race;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RaceRepository extends JpaRepository<Race, Long> {
+    boolean existsByDrivers_id(Long driverId);
 }

@@ -3,10 +3,12 @@ package com.example.racing.controller;
 import com.example.racing.model.Team;
 import com.example.racing.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +42,14 @@ public class TeamController {
             model.addAttribute("team", team);
             return "teams/form";
         }
-        teamService.saveTeamWithLogo(team, logofile);
+
+        try {
+            teamService.saveTeamWithLogo(team, logofile);
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("name", "error.team", "Team name must be unique.");
+            return "teams/form";
+        }
+
         return "redirect:/teams";
     }
 
@@ -52,14 +61,37 @@ public class TeamController {
 
     @PostMapping("/update/{id}")
     public String updateTeam(@PathVariable Long id,
-            @Valid @ModelAttribute("team") Team team,
+            @ModelAttribute("team") Team team,
+            BindingResult result,
             @RequestParam("logoFile") MultipartFile file,
-            BindingResult result) throws IOException {
+            Model model) throws IOException {
+
+        // Manual validation
+        if (team.getName() == null || team.getName().trim().isEmpty()) {
+            result.rejectValue("name", "error.team", "Team name is required.");
+        } else if (team.getName().length() > 256) {
+            result.rejectValue("name", "error.team", "Team name must not exceed 256 characters.");
+        }
+
         if (result.hasErrors()) {
+            model.addAttribute("team", team);
             return "teams/form";
         }
-        teamService.updateTeam(id, team, file);
+
+        try {
+            teamService.updateTeam(id, team, file);
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("name", "error.team", "Team name must be unique.");
+            model.addAttribute("team", team);
+            return "teams/form";
+        }
+
         return "redirect:/teams";
+    }
+
+    @InitBinder
+    public void disableAutoValidation(WebDataBinder binder) {
+        binder.setValidator(null); // disables automatic validation
     }
 
     @GetMapping("/delete/{id}")
@@ -76,9 +108,9 @@ public class TeamController {
 
     @GetMapping("/logo/{id}")
     public ResponseEntity<byte[]> getTeamLogo(@PathVariable Long id) {
-        byte[] logo = teamService.getTeamLogoById(id); // You must implement this in your service
+        byte[] logo = teamService.getTeamLogoById(id);
         return ResponseEntity.ok()
-                .header("Content-Type", "image/jpeg") // or determine type dynamically if needed
+                .header("Content-Type", "image/jpeg")
                 .body(logo);
     }
 }

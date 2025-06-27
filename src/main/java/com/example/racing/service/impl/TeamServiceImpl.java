@@ -3,6 +3,8 @@ package com.example.racing.service.impl;
 import com.example.racing.model.Team;
 import com.example.racing.repository.TeamRepository;
 import com.example.racing.service.TeamService;
+import com.example.racing.exception.FileSizeExceededException;
+import com.example.racing.exception.LogoMissingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +16,12 @@ import java.util.Optional;
 @Service
 public class TeamServiceImpl implements TeamService {
 
+    private final TeamRepository teamRepository;
+
     @Autowired
-    private TeamRepository teamRepository;
+    public TeamServiceImpl(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     @Override
     public List<Team> getAllTeams() {
@@ -37,12 +43,14 @@ public class TeamServiceImpl implements TeamService {
 
         if (isNew) {
             if (logofile == null || logofile.isEmpty()) {
-                throw new IllegalArgumentException("Logo is mandatory");
+                throw new LogoMissingException("Logo is mandatory");
+
             }
 
             if (logofile != null && !logofile.isEmpty()) {
                 if (logofile.getSize() > 51200) { // 50 KB = 50 * 1024 bytes = 51200
-                    throw new IllegalArgumentException("Logo file size exceeds 50KB");
+                    throw new FileSizeExceededException("Logo file size exceeds 50KB");
+
                 }
                 team.setLogo(logofile.getBytes());
             }
@@ -61,9 +69,10 @@ public class TeamServiceImpl implements TeamService {
             existingTeam.setLocation(updatedTeam.getLocation());
             existingTeam.setDescription(updatedTeam.getDescription());
 
-            if (!file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 if (file.getSize() > 51200) {
-                    throw new IllegalArgumentException("Logo file size exceeds 50KB");
+                    throw new FileSizeExceededException("Logo file size exceeds 50KB");
+
                 }
                 existingTeam.setLogo(file.getBytes());
             }
@@ -90,5 +99,10 @@ public class TeamServiceImpl implements TeamService {
     public byte[] getTeamLogoById(Long id) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new RuntimeException("Team not found"));
         return team.getLogo();
+    }
+
+    @Override
+    public void saveTeam(Team team) {
+        teamRepository.save(team);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.racing.service.impl;
 
 import com.example.racing.model.Driver;
+import com.example.racing.model.Race;
 import com.example.racing.repository.DriverRepository;
 import com.example.racing.service.DriverService;
+import com.example.racing.service.RaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public List<Driver> getAllDrivers() {
-        return driverRepository.findAll();
+        return driverRepository.findAllWithRelations();
     }
 
     @Override

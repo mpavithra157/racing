@@ -15,6 +15,7 @@
                     <th>Location</th>
                     <th>Logo</th>
                     <th>Description</th>
+                    <th>Drivers</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,6 +29,12 @@
                     </td>
                     <td th:text="${team.description}">Description</td>
                     <td>
+                        <ul>
+                            <li th:each="driver :${team.drivers}"
+                            th:text="${driver.firstName + '' + driver.lastName}">Driver Name</li>
+                        </ul>
+                    </td>
+                    <td>
                         <a th:href="@{'/teams/edit/' + ${team.id}}">Edit</a>
                         <a th:href="@{'/teams/delete/' + ${team.id}}">Delete</a>
                     </td>
@@ -35,6 +42,8 @@
             </tbody>
             </table>
             <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+            <button><a href="/">Home</a></button>
  
     </body>
 </html>

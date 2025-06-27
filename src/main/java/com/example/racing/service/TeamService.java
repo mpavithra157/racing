@@ -17,5 +17,7 @@ public interface TeamService {
 
     void deleteTeam(Long id);
 
+    void saveTeam(Team team);
+
     byte[] getTeamLogoById(Long id);
 }
